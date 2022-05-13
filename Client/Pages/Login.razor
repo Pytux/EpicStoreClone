@@ -1,0 +1,53 @@
+@page "/login"
+@using BlazorStore.Client
+@inject IAutheticationService authService
+@inject NavigationManager nav
+
+<div class="login">
+    <main>
+        <h1>Login</h1>
+        <hr/>
+        <EditForm Model="@userLogin" class="form" OnSubmit="@HandleLogin">
+            <div>
+                <label>
+                    <span>Email</span>
+                    <InputText @bind-Value="userLogin.Email" placeholder="Email" class="form-control"></InputText>
+                </label>
+            </div>
+            <div>
+                <label>
+                    <span>Password</span>
+                    <InputText @bind-Value="userLogin.Password" placeholder="********" type="password" class="form-control"></InputText>
+                </label>
+            </div>
+            @if (!string.IsNullOrEmpty(ErrorLogin))
+            {
+                <div class="validation-message">@ErrorLogin</div>
+            }
+
+            <input type="submit" class="btn btn-primary" value="Sign In"/>
+        </EditForm>
+    </main>
+</div>
+
+@code
+{
+    readonly UserLogin userLogin = new();
+
+    public string ErrorLogin = "";
+
+    private async Task HandleLogin()
+    {
+        var result = await authService.Login(userLogin);
+
+        if (result)
+        {
+            nav.NavigateTo("/");
+        }
+        else
+        {
+            ErrorLogin = "Usuario o Password Incorrecto";
+        }
+    }
+
+}

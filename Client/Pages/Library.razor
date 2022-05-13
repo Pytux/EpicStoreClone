@@ -1,0 +1,41 @@
+@page "/Library"
+@using Microsoft.AspNetCore.Components.Authorization
+@using BlazorStore.Client
+@using System.Security.Claims
+@inject AuthenticationStateProvider auth
+@inject IHttpService service
+
+<div class="library">
+    <main>
+        @if (gameLst != null && gameLst.Count > 0)
+        {
+            @foreach (var game in gameLst)
+            {
+                <a class="game-card" href="#">
+                    <article>
+                        <div>
+                            <img src="@game.Image"/>
+                        </div>
+                        <h3>@game.Title</h3>
+                        <p>
+                            <span class="jam jam-download"></span>
+                            <span>Download</span>
+                        </p>
+                    </article>
+                </a>
+            }
+        }
+    </main>
+</div>
+
+@code
+{
+    List<Game> gameLst = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var userId = (await auth.GetAuthenticationStateAsync()).User?.Claims?.FirstOrDefault(p => p.Type == ClaimTypes.UserData)?.Value;
+
+        gameLst = await service.Get<List<Game>>($"usergame/GetGames/{userId}");
+    }
+}

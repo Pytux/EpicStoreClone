@@ -1,0 +1,47 @@
+﻿<header>
+    <a href="/">
+        <img src="/logo.svg"/>
+        <span>Epic Games</span>
+    </a>
+</header>
+
+<nav class="@NavMenuCssClass" @onclick="ToggleNavMenu">
+    <ul>
+        <li>
+            <NavLink class="home" href="" Match="NavLinkMatch.All">
+                <span class="jam jam-home-f" aria-hidden="true"></span>
+                <span>Home</span>
+            </NavLink>
+        </li>
+        <li>
+            <NavLink class="store" href="store">
+                <span class="jam jam-tag-f" aria-hidden="true"></span>
+                <span>Store</span>
+            </NavLink>
+        </li>
+        <li>
+            <NavLink class="library" href="library">
+                <span class="jam jam-grid-f" aria-hidden="true"></span>
+                <span>My Games</span>
+            </NavLink>
+        </li>
+        <li>
+            <NavLink class="settings" href="settings">
+                <span class="jam jam-cog-f" aria-hidden="true"></span>
+                <span>Settings</span>
+            </NavLink>
+        </li>
+    </ul>
+</nav>
+
+@code {
+    private bool collapseNavMenu = true;
+
+    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+
+}

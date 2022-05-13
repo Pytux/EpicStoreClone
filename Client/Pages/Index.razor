@@ -1,0 +1,36 @@
+﻿@page "/"
+@using BlazorStore.Client
+@inject IHttpService service
+@inject ILogger<Index> logger
+
+<div class="home">
+    <main>
+        @if (newLst != null && newLst.Count > 0)
+        {
+            foreach (var item in newLst)
+            {
+                <a class="news-item" href="@item.Url" target="_blank">
+                    <article>
+                        <div>
+                            <img src="@item.Image"/>
+                        </div>
+                        <div>
+                            <p>@item.Description</p>
+                            <span>Read More</span>
+                        </div>
+                    </article>
+                </a>
+            }
+        }
+    </main>
+</div>
+
+@code {
+    List<News> newLst = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        newLst = await service.Get<List<News>>("news");
+    }
+
+}

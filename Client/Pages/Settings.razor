@@ -1,0 +1,66 @@
+@page "/settings"
+@using BlazorStore.Client
+@using Microsoft.AspNetCore.Components.Authorization
+@using System.Security.Claims
+@inject IHttpService service
+@inject AuthenticationStateProvider auth
+
+<div class="settings">
+    <main>
+        <EditForm Model="@userProfile" class="form" OnSubmit="@HandleSubmit">
+            <h2>Basic Information</h2>
+            <div>
+                <label>
+                    <span>Username</span>
+                    <InputText class="form-control" @bind-Value="userProfile.UserName" placeholder="Username"></InputText>
+                </label>
+            </div>
+            <div>
+                <label>
+                    <span>Email</span>
+                    <InputText class="form-control" @bind-Value="userProfile.Email" placeholder="Email"></InputText>
+                </label>
+            </div>
+            <h2>Personal Information</h2>
+            <div>
+                <label>
+                    <span>Name</span>
+                    <InputText class="form-control" @bind-Value="userProfile.Name" placeholder="Name"></InputText>
+                </label>
+            </div>
+            <div>
+                <label>
+                    <span>Lastname</span>
+                    <InputText class="form-control" @bind-Value="userProfile.LastName" placeholder="Lastname"></InputText>
+                </label>
+            </div>
+            <div>
+                <label>
+                    <span>Country</span>
+                    <InputText class="form-control" @bind-Value="userProfile.Country" placeholder="Country"></InputText>
+                </label>
+            </div>
+        </EditForm>
+    </main>
+</div>
+
+
+@code
+{
+    UserProfile userProfile = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var userId = (await auth.GetAuthenticationStateAsync()).User?.Claims?.FirstOrDefault(p => p.Type == ClaimTypes.UserData)?.Value;
+
+        userProfile = await service.Get<UserProfile>($"userprofile/{userId}");
+    }
+
+    public async Task HandleSubmit()
+    {
+        var userId = (await auth.GetAuthenticationStateAsync()).User?.Claims?.FirstOrDefault(p => p.Type == ClaimTypes.UserData)?.Value;
+
+        await service.PutString($"UserProfile/{userId}", userProfile);
+    }
+
+}
